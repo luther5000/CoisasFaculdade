@@ -1,3 +1,5 @@
+import math
+
 from mip import *
 import numpy as py
 
@@ -25,11 +27,45 @@ def criaModel(numVar, numRest, objetivo, restricoes):
 
     model.objective = xsum(int(objetivo[i]) * x[i] for i in range(numVar))
 
+
     for i in range(numRest):
         linhaAtual = restricoes[i]
         model += xsum(int(linhaAtual[j]) * x[j] for j in range(numVar - 1)) <= int(linhaAtual[numVar])
 
     return model
+
+
+def executaTudo(model, y, s):
+    if s == '<=':
+        cont = 0
+        for i in model.vars:
+            if str(i) == y:
+                model += model.var_by_name("x[" + str(cont) + "]") <= math.floor(i)
+            ++cont
+    else:
+        cont = 0
+        for i in model.vars:
+            if str(i) == y:
+                model += model.var_by_name("x[" + str(cont) + "]") >= round(i)
+            ++cont
+
+    solve(model)
+    # adicionar if da solução atual ser menor do que a melhor solução já achada
+    # adicionar o if da terceira condição d saida q eu n lembro qual eh
+
+    lista = []
+    for i in model.vars:
+        if round(i) != i:
+            lista.append(i)
+
+    if lista.__sizeof__() != 0:
+        menorDist = 10
+        for i in range (lista.__sizeof__()):
+            if i-math.floor(i) - 0.5 < menorDist:
+                indice = i
+                menorDist = i-math.floor(i) - 0.5
+        executaTudo(model, str(lista[indice]), "<=")
+        executaTudo(model, str(lista[indice]), ">=")
 
 
 linhas = []
@@ -50,7 +86,3 @@ for i in range(numRest):
 
 model = criaModel(numVar, numRest, objetivo, restricoes)
 solve(model)
-
-stack = []
-if py.round(model.var_by_name("x[1]")) != model.var_by_name("x[1]"):
-    stack.append(model.var_by_name("x[1]"))
