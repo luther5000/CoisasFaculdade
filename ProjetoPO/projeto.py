@@ -44,32 +44,35 @@ class Modelo:
         self.save(model, "model.lp")
         return model
 
+
     def executaTudo(self, model, y, s):
+        model0 = model.copy()
         if s == '1':
             cont = 0
-            for i in model.vars:
+            for i in model0.vars:
                 if i.name == y:
-                    model += model.var_by_name("x_" + str(cont)) == 1
+                    model0 += model0.var_by_name("x_" + str(cont)) == 1
                 cont += 1
         else:
             cont = 0
-            for i in model.vars:
+            for i in model0.vars:
                 if i.name == y:
-                    model += model.var_by_name("x_" + str(cont)) == 0
+                    model0 += model0.var_by_name("x_" + str(cont)) == 0
                 cont += 1
+            self.save(model0, "model.lp")
 
-        if model.optimize() != OptimizationStatus.OPTIMAL:
+        if model0.optimize() != OptimizationStatus.OPTIMAL:
             return
 
-        self.save(model, "model.lp")
-        self.solve(model)
+        self.save(model0, "model.lp")
+        self.solve(model0)
 
         if self.menor != 0:
-            if model.objective_value <= self.menor:
+            if model0.objective_value <= self.menor:
                 return
 
         lista = []
-        for i in model.vars:
+        for i in model0.vars:
             if round(i.x) != i.x:
                 lista.append(i)
 
@@ -80,16 +83,16 @@ class Modelo:
                 if i - math.floor(i) - 0.5 < menorDist:
                     indice = i
                     menorDist = i - math.floor(i) - 0.5
-            self.executaTudo(model, str(lista[indice]), "1")
-            self.executaTudo(model, str(lista[indice]), "0")
+            self.executaTudo(model0, str(lista[indice]), "1")
+            self.executaTudo(model0, str(lista[indice]), "0")
 
         else:
             if self.menor != 0:
-                if self.menor < model.objective_value:
-                    self.menor = model.objective_value
+                if self.menor < model0.objective_value:
+                    self.menor = model0.objective_value
                 return
             else:
-                self.menor = model.objective_value
+                self.menor = model0.objective_value
                 return
 
 
