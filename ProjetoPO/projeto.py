@@ -1,12 +1,10 @@
 import math
-
 from mip import *
 
 
 class Modelo:
     def __init__(self):
         self.menor = 0
-        self.maior = 0
 
     def save(self, model, filename):
         model.write(filename)
@@ -32,9 +30,6 @@ class Modelo:
 
         x = [model.add_var(var_type=CONTINUOUS, lb=0, ub=1, name="x_" + str(i)) for i in range(numVar)]
 
-        #for i in objetivo:
-            #i.strip()
-
         model.objective = xsum(int(objetivo[i]) * x[i] for i in range(numVar))
 
         for i in range(numRest):
@@ -45,7 +40,7 @@ class Modelo:
         return model
 
 
-    def executaTudo(self, model, y, s):
+    def BranchAndBound(self, model, y, s):
         model0 = model.copy()
         if s == '1':
             cont = 0
@@ -80,11 +75,11 @@ class Modelo:
             menorDist = 10
             indice = -1
             for i in range(len(lista)):
-                if i - math.floor(i) - 0.5 < menorDist:
+                if abs(lista[i].x - 0.5) < menorDist:
                     indice = i
-                    menorDist = i - math.floor(i) - 0.5
-            self.executaTudo(model0, str(lista[indice]), "1")
-            self.executaTudo(model0, str(lista[indice]), "0")
+                    menorDist = abs(lista[i].x - 0.5)
+            self.BranchAndBound(model0, str(lista[indice]), "1")
+            self.BranchAndBound(model0, str(lista[indice]), "0")
 
         else:
             if self.menor != 0:
@@ -97,7 +92,7 @@ class Modelo:
 
 
 linhas = []
-with open("teste1.txt") as file:
+with open("teste4.txt") as file:
     for line in file:
         linhas.append(line)
 
@@ -122,14 +117,13 @@ for i in model.vars:
         lista.append(i)
 
 if len(lista) != 0:
-    modelo.maior = model.objective_value
     menorDist = 10
     indice = -1
     for i in range(len(lista)):
-        if i - math.floor(i) - 0.5 < menorDist:
+        if abs(lista[i].x - 0.5) < menorDist:
             indice = i
-            menorDist = i - math.floor(i) - 0.5
-    modelo.executaTudo(model, str(lista[indice]), "1")
-    modelo.executaTudo(model, str(lista[indice]), "0")
+            menorDist = abs(lista[i].x - 0.5)
+    modelo.BranchAndBound(model, str(lista[indice]), "1")
+    modelo.BranchAndBound(model, str(lista[indice]), "0")
 
     print(modelo.menor)
