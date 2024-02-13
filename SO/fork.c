@@ -4,52 +4,6 @@
 #include <sys/types.h>
 #include <malloc.h>
 
-typedef struct node{
-    int content;
-    struct node *prox;
-}node;
-typedef struct fila{
-    struct node *root;
-    int tam;
-}fila;
-
-fila* cria(){
-    fila *p = (fila *) malloc(sizeof (fila));
-    node *placeholder = malloc(sizeof (node));
-    p->root = placeholder;
-    p->tam = 0;
-    placeholder->prox = placeholder;
-    placeholder->content = -1;
-    return p;
-}
-
-int isEmpty(fila *p){
-    return (p->root->content == -1);
-}
-
-void push(fila *p, int num){
-    node *new = (node *) malloc(sizeof(node));
-    new->content = num;
-    new->prox = p->root->prox;
-    if (isEmpty(p))
-        p->root->prox = new;
-    p->root = new;
-    p->tam++;
-}
-
-int top(fila *p){
-    return (p->root->content);
-}
-
-int remove_(fila *p){
-    node *aux = p->root->prox->prox;
-    p->root->prox->prox = p->root->prox->prox->prox;
-    return aux->content;
-}
-
-int tam(fila *p){
-    return p->tam;
-}
 
 int main() {
     int pid1 = fork();//criou um filho, guarda pid main
@@ -84,42 +38,22 @@ int main() {
         return 0;//encerra a execução dos filhos para que a main volte a ser realidada
     }
 
-    fila *fila = cria();
-    push(fila, getpid());
-    sleep(1);
     if (pid45 == 0 || pid56 == 0) {
 
-        if (top(fila) == getpid()){
-            remove_(fila);
-            char *binaryPath = "/bin/ls";
+        if (getpid() % 2 != 0){
+            /*char *binaryPath = "/bin/ls";
             char *arg1 = "-lh";
-            char *arg2 = "/home";
+            char *arg2 = "/home";*/
+            printf("1Sou neto de pid: %d\n", getpid());
+            //execl(binaryPath, binaryPath, arg1, arg2, NULL);
+            printf("2Sou neto de pid: %d\n", getpid());
 
-            execl(binaryPath, binaryPath, arg1, arg2, NULL);
-        }
-        sleep(1);
+        } else {
+            printf("3Sou neto de pid: %d\n", getpid());
+            printf("4Sou neto de pid: %d\n", getpid());
 
-        if (top(fila) == getpid()){
-            remove_(fila);
-            char *binaryPath = "/bin/ls";
-            char *arg1 = "ls";
-            char *arg2 = "/home";
-
-            execl(binaryPath, binaryPath, arg1, arg2, NULL);
         }
 
-        sleep(1);
-        if (top(fila) == getpid()){
-            remove_(fila);
-            execl("/home/lutero/CLionProjects/trem_d_SO/Executaveis", "", NULL);
-        }
-
-        sleep(1);
-        if (top(fila) == getpid()){
-            remove_(fila);
-            execl("/home/lutero/CLionProjects/trem_d_SO/Executaveis", "", NULL);
-        }
-        sleep(1);
-         }
+    }
     return 0;
 }
