@@ -50,7 +50,7 @@ tree_node *criaArvore(int ){
     return getNode();
 }
 
-tree_node *insereNaArvore(tree_node *p, *objeto objeto, int key){
+void *insereNaArvore(tree_node *p, *objeto objeto, int key){
     if (p->left == NULL){
         p->key = key;
         p->left = (tree_node *) objeto;
@@ -59,13 +59,39 @@ tree_node *insereNaArvore(tree_node *p, *objeto objeto, int key){
         tree_node *aux = p;
         
         while (aux->right != NULL){
-            if (key < aux-> key)
+            if (key < aux->key)
                 aux = aux->left;
             else
                 aux = aux->right
         }
     }
+    
+    if (aux->key == key){
+        return;
+    }
+    
+    tree_node *novo, *velho;
+    velho = getNode();
+    novo = getNode();
+    velho->right = aux->right;
+    velho->left = aux->left;
+    velho->key = aux->key;
+    
+    novo->right = NULL;
+    novo->left = (tree_node *) objeto;
+    novo->key = key;
+    
+    if(key > aux->key){
+        aux->right = novo;
+        aux->left = velho;
+        aux->key = key;
+    } else {
+        aux->right = velho;
+        aux->left = old;
+    }
 }
+
+
 
 int main()
 {
