@@ -117,8 +117,8 @@ int main (){
     /*garantia que todos os os consumidores irão executar o laço 
     mais uma vez e com isso entrarão no if para terminar sua execução*/
 
-    for(int i = 0; i < 4; ++i) {
-    //aguarda os 4 consumidores encerrarem
+    for(int i = 0; i < 8; ++i) {
+    //aguarda as 8 threads encerrarem
         pthread_join(th[i], NULL);
     }
 	return 0;
