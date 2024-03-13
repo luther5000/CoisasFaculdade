@@ -24,13 +24,13 @@ void *consumidor (void *t){
         if (acabou){
             return NULL;
         }
-        
+
         while(cont == 0);
         printf("%c", buffer[le]);
-        
+
         flag[*id] = 1;
         while (flag[*id]);
-        
+
     }
     return NULL;
 }
@@ -41,7 +41,7 @@ void *produtor (void *t)
 
   for (int i = 0; i < string.tam; i++){
 	  while (cont >= 8 && (insere + 1) % BUFFERSIZE == le);
-	  
+
 	  cont += 1;
 	  buffer[insere] = string.string[i];
 	  insere = (insere + 1) % BUFFERSIZE;
@@ -51,7 +51,7 @@ void *produtor (void *t)
 
 int main (){
     pthread_t th[8];
-    
+
     string_t s[] = { {4, "0123"}, {2, "45"}, {1, "6"}, {3, "789"} };
     int id[] = { 0, 1, 2, 3 };
 
@@ -62,22 +62,22 @@ int main (){
 	for (int i = 0; i < 4; i++){
 		pthread_create (&th[i + 4], NULL, consumidor, (void *) &id[i]);
 	}
-    
+
     do{
             while (!flag[0] || !flag[1] || !flag[2] || !flag[3]);
-                
+
             le += 1;
             cont -= 1;
-            
+
             printf("\n");
             flag[0] = flag[1] = flag[2] = flag[3] = 0;
-        
+
     }while (cont > 0);
-    
+
     flag[0] = flag[1] = flag[2] = flag[3] = 0;
     acabou = 1;
-    
-    for(int i = 0; i < 8; ++i) {
+
+    for(int i = 0; i < 4; ++i) {
         pthread_join(th[i], NULL);
     }
 	return 0;
