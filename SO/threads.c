@@ -29,7 +29,7 @@ void *consumidor (void *t){
         printf("%c", buffer[le]);
         
         flag[*id] = 1;
-        while (flag[0] || flag[1] || flag[2] || flag[3]);
+        while (flag[*id]);
         
     }
     return NULL;
@@ -63,20 +63,19 @@ int main (){
 		pthread_create (&th[i + 4], NULL, consumidor, (void *) &id[i]);
 	}
     
-    for (int k= 0; k < 4; k++){
-        for (int j = 0; j < s[k].tam; j++){
+    do{
             while (!flag[0] || !flag[1] || !flag[2] || !flag[3]);
-            
-            if (k == 3 && j + 1 == s[k].tam)
-                acabou = 1;
                 
             le += 1;
             cont -= 1;
             
             printf("\n");
             flag[0] = flag[1] = flag[2] = flag[3] = 0;
-        }
-    }
+        
+    }while (cont > 0);
+    
+    flag[0] = flag[1] = flag[2] = flag[3] = 0;
+    acabou = 1;
     
     for(int i = 0; i < 8; ++i) {
         pthread_join(th[i], NULL);
