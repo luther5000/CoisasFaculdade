@@ -12,8 +12,10 @@ public class Main{
         mensagens.add("A chuva cai suavemente sobre a terra molhada");
         mensagens.add("Os passaros voam livremente entre as arvores verdes");
         mensagens.add("A lua ilumina a noite escura com seu brilho prateado");
-        /*mensagens.add("As flores perfumam os campos");
-        mensagens.add("Os lirios do campo florescem delicadamente ao amanhecer");*/
+        mensagens.add("As flores perfumam os campos");
+        mensagens.add("Os lirios do campo florescem delicadamente ao amanhecer");
+        mensagens.add("A grama verde oscila suavemente com a brisa fresca da manhã");
+        mensagens.add("As estrelas cintilam no firmamento noturno");
 
         Buffer buffer = new Buffer(7, 4);
         int[] ids = {0, 1, 2, 3};
